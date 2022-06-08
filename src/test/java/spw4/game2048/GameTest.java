@@ -112,7 +112,7 @@ class GameTest {
         }
 
         @Test
-        void createFullBoardReturnsGameOver() {
+        void isOverWithFullBoardNoMovesLeftReturnsTrue() {
             GameImpl.random = new RandomStub();
             var sut = new GameImpl();
             for (int i = 0; i < sut.getBoardSize(); i++) {
@@ -123,6 +123,31 @@ class GameTest {
             var expected = true;
 
             assertEquals(expected, sut.isOver());
+        }
+
+        @Test
+        void isOverWithFullBoardOneMoveLeftReturnsFalse() {
+            GameImpl.random = new RandomStub();
+            var sut = new GameImpl();
+            for (int i = 0; i < sut.getBoardSize(); i++) {
+                for (int k = 0; k < sut.getBoardSize(); k++) {
+                    sut.placeTile(i, k, ((i + k) % 2 == 0) ? 4 : 2);
+                }
+            }
+            sut.placeTile(0, 0, 2);
+            var expected = false;
+
+            assertEquals(expected, sut.isOver());
+        }
+
+        @Test
+        void isWonWithSingle2048ReturnsTrue() {
+            GameImpl.random = new RandomStub();
+            var sut = new GameImpl();
+            sut.placeTile(0, 0, 2048);
+            var expected = true;
+
+            assertEquals(expected, sut.isWon());
         }
 
         private int getBoardSum(GameImpl sut) {
