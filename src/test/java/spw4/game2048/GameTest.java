@@ -150,6 +150,16 @@ class GameTest {
             assertEquals(expected, sut.isWon());
         }
 
+        @Test
+        void isOverWithSingle2048ReturnsTrue() {
+            GameImpl.random = new RandomStub();
+            var sut = new GameImpl();
+            sut.placeTile(0, 0, 2048);
+            var expected = true;
+
+            assertEquals(expected, sut.isOver());
+        }
+
         private int getBoardSum(GameImpl sut) {
             int sum = 0;
             for (int i = 0; i < sut.getBoardSize(); i++) {
