@@ -440,11 +440,12 @@ class GameTest {
     @Test
     void toStringOnEmptyField(){
         var sut = new GameImpl();
-        var expected = "Moves: 0\t\tScore: 0\n" +
-                ".\t.\t.\t." +
-                ".\t.\t.\t." +
-                ".\t.\t.\t." +
-                ".\t.\t.\t.";
+        var expected = """
+                Moves: 0\t\tScore: 0
+                .    .    .    .
+                .    .    .    .
+                .    .    .    .
+                .    .    .    .""";
 
         assertEquals(expected, sut.toString());
     }
@@ -454,11 +455,28 @@ class GameTest {
         GameImpl.random = new RandomStub();
         var sut = new GameImpl();
         sut.initialize();
-        var expected = "Moves: 0\t\tScore: 0\n" +
-                ".\t.\t.\t." +
-                ".\t4\t2\t." +
-                ".\t.\t.\t." +
-                ".\t.\t.\t.";
+        var expected = """
+                Moves: 0\t\tScore: 0
+                .    .    .    .
+                .    4    2    .
+                .    .    .    .
+                .    .    .    .""";
+
+        assertEquals(expected, sut.toString());
+    }
+
+    @Test
+    void toStringOnInitializedFieldWithBigNumber(){
+        GameImpl.random = new RandomStub();
+        var sut = new GameImpl();
+        sut.initialize();
+        sut.placeTile(0,0,2048);
+        var expected = """
+                Moves: 0\t\tScore: 0
+                2048 .    .    .
+                .    4    2    .
+                .    .    .    .
+                .    .    .    .""";
 
         assertEquals(expected, sut.toString());
     }
@@ -468,20 +486,22 @@ class GameTest {
         GameImpl.random = new RandomStub(new int[]{0,0,0 , 2,2,1, 1,1,0, 0,0,0});
         var sut = new GameImpl();
         sut.initialize();
-        var expected = "Moves: 0\t\tScore: 0\n" +
-                "4\t.\t.\t." +
-                ".\t.\t.\t." +
-                ".\t.\t2\t." +
-                ".\t.\t.\t.";
+        var expected = """
+                Moves: 0\t\tScore: 0
+                4    .    .    .
+                .    .    .    .
+                .    .    2    .
+                .    .    .    .""";
 
         assertEquals(expected, sut.toString());
 
 
-        expected = "Moves: 1\t\tScore: 0\n" +
-                ".\t.\t.\t." +
-                ".\t4\t.\t." +
-                ".\t.\t.\t." +
-                "4\t.\t2\t.";
+        expected = """
+                Moves: 1\t\tScore: 0
+                .    .    .    .
+                .    4    .    .
+                .    .    .    .
+                4    .    2    .""";
 
         sut.move(Direction.down);
 

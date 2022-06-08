@@ -1,6 +1,5 @@
 package spw4.game2048;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -63,8 +62,18 @@ public class GameImpl implements Game {
 
     @Override
     public String toString() {
-        // to do ...
-        return "";
+        StringBuilder returnVal = new StringBuilder(String.format("Moves: %s\t\tScore: %d\n", moves, score));
+
+        for (int i = 0; i < size; i++) {
+            StringBuilder toAdd = new StringBuilder();
+            for (int k = 0; k < size; k++) {
+                toAdd.append(String.format("%-5s", board[i][k] == 0 ? "." : board[i][k]));
+            }
+            returnVal.append(toAdd.toString().trim());
+            returnVal.append('\n');
+        }
+
+        return returnVal.toString().trim();
     }
 
     public void initialize() {
@@ -138,7 +147,6 @@ public class GameImpl implements Game {
     }
 
     public void placeTile(int x, int y, int value) {
-
         board[y][x] = value;
     }
 }
