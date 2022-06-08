@@ -35,10 +35,10 @@ public class GameImpl implements Game {
             for (int o = 0; o < size; o++) {
                 if (board[i][o] == 0) return false;
 
-                if ((o < size - 1 && board[i][o+1] == board[i][o])
-                        || (o > 0 && board[i][o-1] == board[i][o])
-                        || (i < size -1 && board[i+1][o] == board[i][o])
-                        || (i > 0 && board[i-1][o] == board[i][o])) {
+                if ((o < size - 1 && board[i][o + 1] == board[i][o])
+                        || (o > 0 && board[i][o - 1] == board[i][o])
+                        || (i < size - 1 && board[i + 1][o] == board[i][o])
+                        || (i > 0 && board[i - 1][o] == board[i][o])) {
                     return false;
                 }
             }
@@ -49,7 +49,7 @@ public class GameImpl implements Game {
     public boolean isWon() {
         for (int i = 0; i < size; i++) {
             for (int k = 0; k < size; k++) {
-                if(board[i][k] == 2048)
+                if (board[i][k] == 2048)
                     return true;
             }
         }
@@ -73,6 +73,8 @@ public class GameImpl implements Game {
     }
 
     public void move(Direction direction) {
+        boolean hasMovedAnything = false;
+
         boolean isVertical = direction == Direction.up || direction == Direction.down;
 
         int startValue = 0;
@@ -99,7 +101,7 @@ public class GameImpl implements Game {
                         xPosToShiftFrom = xPosToShiftTo;
                         yPosToShiftFrom = cursorPos;
                     }
-                    if(yPosToShiftFrom == yPosToShiftTo && xPosToShiftFrom == xPosToShiftTo)
+                    if (yPosToShiftFrom == yPosToShiftTo && xPosToShiftFrom == xPosToShiftTo)
                         continue;
                     if (board[yPosToShiftFrom][xPosToShiftFrom] != 0) {
                         if (board[yPosToShiftTo][xPosToShiftTo] == board[yPosToShiftFrom][xPosToShiftFrom] && !summedUpFields[yPosToShiftTo][xPosToShiftTo]) {
@@ -107,17 +109,21 @@ public class GameImpl implements Game {
                             board[yPosToShiftFrom][xPosToShiftFrom] = 0;
                             score += board[yPosToShiftTo][xPosToShiftTo];
                             summedUpFields[yPosToShiftTo][xPosToShiftTo] = true;
-                        } else if(board[yPosToShiftTo][xPosToShiftTo] == 0) {
+                            hasMovedAnything = true;
+                        } else if (board[yPosToShiftTo][xPosToShiftTo] == 0) {
                             board[yPosToShiftTo][xPosToShiftTo] = board[yPosToShiftFrom][xPosToShiftFrom];
                             board[yPosToShiftFrom][xPosToShiftFrom] = 0;
+                            hasMovedAnything = true;
                         }
                     }
                 }
             }
         }
 
-        moves++;
-        placeRandomTile();
+        if (hasMovedAnything) {
+            moves++;
+            placeRandomTile();
+        }
     }
 
     public void placeRandomTile() {

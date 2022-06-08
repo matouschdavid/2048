@@ -246,23 +246,23 @@ class GameTest {
 
         @Test
         void moveTwiceSameDirectionGetMovesReturnsCount(){
-            GameImpl.random = new RandomStub(new int[]{0, 1, 1, 1, 1, 1, 3, 1, 0, 0, 0, 0});
+            GameImpl.random = new RandomStub(new int[]{0, 1, 1, 1, 1, 1, 0, 0, 0});
             var sut = new GameImpl();
             sut.initialize();
             var expected = 1;
 
-            sut.move(Direction.down);
-            sut.move(Direction.down);
+            sut.move(Direction.up);
+            sut.move(Direction.up);
 
             assertEquals(expected, sut.getMoves());
         }
 
         @Test
         void moveTwiceDifferentDirectionsGetMovesReturnsCount(){
-            GameImpl.random = new RandomStub(new int[]{0, 1, 1, 1, 1, 1, 3, 1, 0, 0, 0, 0});
+            GameImpl.random = new RandomStub(new int[]{0, 1, 1, 1, 1, 1, 2, 1, 0, 0, 0, 0});
             var sut = new GameImpl();
             sut.initialize();
-            var expected = 1;
+            var expected = 2;
 
             sut.move(Direction.down);
             sut.move(Direction.up);
@@ -272,7 +272,7 @@ class GameTest {
 
         @Test
         void moveOnceNoTileMovedGetMovesReturnsCount(){
-            GameImpl.random = new RandomStub(new int[]{0, 0, 1, 1, 0, 1});
+            GameImpl.random = new RandomStub(new int[]{0, 0, 1, 1, 0, 0});
             var sut = new GameImpl();
             sut.initialize();
             var expected = 0;
@@ -435,5 +435,56 @@ class GameTest {
 
             assertEquals(expectedScore, sut.getScore());
         }
+    }
+
+    @Test
+    void toStringOnEmptyField(){
+        var sut = new GameImpl();
+        var expected = "Moves: 0\t\tScore: 0\n" +
+                ".\t.\t.\t." +
+                ".\t.\t.\t." +
+                ".\t.\t.\t." +
+                ".\t.\t.\t.";
+
+        assertEquals(expected, sut.toString());
+    }
+
+    @Test
+    void toStringOnInitializedField(){
+        GameImpl.random = new RandomStub();
+        var sut = new GameImpl();
+        sut.initialize();
+        var expected = "Moves: 0\t\tScore: 0\n" +
+                ".\t.\t.\t." +
+                ".\t4\t2\t." +
+                ".\t.\t.\t." +
+                ".\t.\t.\t.";
+
+        assertEquals(expected, sut.toString());
+    }
+
+    @Test
+    void toStringAfterOneMove(){
+        GameImpl.random = new RandomStub(new int[]{0,0,0 , 2,2,1, 1,1,0, 0,0,0});
+        var sut = new GameImpl();
+        sut.initialize();
+        var expected = "Moves: 0\t\tScore: 0\n" +
+                "4\t.\t.\t." +
+                ".\t.\t.\t." +
+                ".\t.\t2\t." +
+                ".\t.\t.\t.";
+
+        assertEquals(expected, sut.toString());
+
+
+        expected = "Moves: 1\t\tScore: 0\n" +
+                ".\t.\t.\t." +
+                ".\t4\t.\t." +
+                ".\t.\t.\t." +
+                "4\t.\t2\t.";
+
+        sut.move(Direction.down);
+
+        assertEquals(expected, sut.toString());
     }
 }
