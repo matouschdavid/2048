@@ -356,6 +356,18 @@ class GameTest {
             assertEquals(expectedFirst, sut.getValueAt(1, sut.getBoardSize() - 2));
             assertEquals(expectedSecond, sut.getValueAt(1, sut.getBoardSize() - 1));
         }
+
+        @Test
+        void moveMultipleGetMovesReturnsCount(){
+            GameImpl.random = new RandomStub(new int[]{0, 1, 1, 1, 1, 1, 3, 1, 0, 0, 0, 0});
+            var sut = new GameImpl();
+            sut.initialize();
+            var expected = 1;
+
+            sut.move(Direction.down);
+
+            assertEquals(expected, sut.getMoves());
+        }
     }
 
     @DisplayName("Score")

@@ -45,7 +45,12 @@ public class GameImpl implements Game {
     }
 
     public boolean isWon() {
-        // to do ...
+        for (int i = 0; i < size; i++) {
+            for (int k = 0; k < size; k++) {
+                if(board[i][k] == 2048)
+                    return true;
+            }
+        }
         return false;
     }
 
