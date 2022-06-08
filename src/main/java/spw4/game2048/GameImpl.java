@@ -6,17 +6,19 @@ import java.util.function.Function;
 
 public class GameImpl implements Game {
     public static Random random;
+
     private final int size = 4;
+
     private final int[][] board;
     private int score;
+    private int moves;
 
     public GameImpl() {
         board = new int[size][size];
     }
 
     public int getMoves() {
-        // to do ...
-        return 0;
+        return moves;
     }
 
     public int getScore() {
@@ -114,6 +116,7 @@ public class GameImpl implements Game {
             }
         }
 
+        moves++;
         placeRandomTile();
     }
 

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class GameTest {
-    class RandomStub extends Random {
+    static class RandomStub extends Random {
         public RandomStub(int[] returnVals) {
             this.returnVals = returnVals;
         }
@@ -231,6 +231,56 @@ class GameTest {
 
             verify(sut, times(3)).placeRandomTile();
         }
+
+        @Test
+        void moveOnceGetMovesReturnsCount(){
+            GameImpl.random = new RandomStub(new int[]{0, 1, 1, 1, 1, 1, 3, 1, 0, 0, 0, 0});
+            var sut = new GameImpl();
+            sut.initialize();
+            var expected = 1;
+
+            sut.move(Direction.down);
+
+            assertEquals(expected, sut.getMoves());
+        }
+
+        @Test
+        void moveTwiceSameDirectionGetMovesReturnsCount(){
+            GameImpl.random = new RandomStub(new int[]{0, 1, 1, 1, 1, 1, 3, 1, 0, 0, 0, 0});
+            var sut = new GameImpl();
+            sut.initialize();
+            var expected = 1;
+
+            sut.move(Direction.down);
+            sut.move(Direction.down);
+
+            assertEquals(expected, sut.getMoves());
+        }
+
+        @Test
+        void moveTwiceDifferentDirectionsGetMovesReturnsCount(){
+            GameImpl.random = new RandomStub(new int[]{0, 1, 1, 1, 1, 1, 3, 1, 0, 0, 0, 0});
+            var sut = new GameImpl();
+            sut.initialize();
+            var expected = 1;
+
+            sut.move(Direction.down);
+            sut.move(Direction.up);
+
+            assertEquals(expected, sut.getMoves());
+        }
+
+        @Test
+        void moveOnceNoTileMovedGetMovesReturnsCount(){
+            GameImpl.random = new RandomStub(new int[]{0, 0, 1, 1, 0, 1});
+            var sut = new GameImpl();
+            sut.initialize();
+            var expected = 0;
+
+            sut.move(Direction.up);
+
+            assertEquals(expected, sut.getMoves());
+        }
     }
 
     @DisplayName("Add")
@@ -356,18 +406,6 @@ class GameTest {
             assertEquals(expectedFirst, sut.getValueAt(1, sut.getBoardSize() - 2));
             assertEquals(expectedSecond, sut.getValueAt(1, sut.getBoardSize() - 1));
         }
-
-        @Test
-        void moveMultipleGetMovesReturnsCount(){
-            GameImpl.random = new RandomStub(new int[]{0, 1, 1, 1, 1, 1, 3, 1, 0, 0, 0, 0});
-            var sut = new GameImpl();
-            sut.initialize();
-            var expected = 1;
-
-            sut.move(Direction.down);
-
-            assertEquals(expected, sut.getMoves());
-        }
     }
 
     @DisplayName("Score")
@@ -386,7 +424,7 @@ class GameTest {
         }
 
         @Test
-        void moveMulitpleTimesAddsToScore() {
+        void moveMultipleTimesAddsToScore() {
             GameImpl.random = new RandomStub(new int[]{0, 1, 1, 1, 1, 1, 3, 2, 0, 0, 0, 0});
             var sut = new GameImpl();
             sut.initialize();
