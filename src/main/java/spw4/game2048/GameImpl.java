@@ -30,10 +30,12 @@ public class GameImpl implements Game {
 
 
     public boolean isOver() {
+        if(isWon())
+            return true;
+
         for (int i = 0; i < size; i++) {
             for (int o = 0; o < size; o++) {
                 if (board[i][o] == 0) return false;
-                if (board[i][o] == 2048) return true;
 
                 if ((o < size - 1 && board[i][o + 1] == board[i][o])
                         || (o > 0 && board[i][o - 1] == board[i][o])
@@ -78,6 +80,8 @@ public class GameImpl implements Game {
     }
 
     public void initialize() {
+        if(random == null)
+            random = new Random();
         placeRandomTile();
         placeRandomTile();
     }
