@@ -30,7 +30,7 @@ public class GameImpl implements Game {
 
 
     public boolean isOver() {
-        if(isWon())
+        if (isWon())
             return true;
 
         for (int i = 0; i < size; i++) {
@@ -80,7 +80,7 @@ public class GameImpl implements Game {
     }
 
     public void initialize() {
-        if(random == null)
+        if (random == null)
             random = new Random();
         placeRandomTile();
         placeRandomTile();
@@ -104,30 +104,40 @@ public class GameImpl implements Game {
         }
 
         var summedUpFields = new boolean[size][size];
-        for (int yPosToShiftTo = startValue; condition.apply(yPosToShiftTo); yPosToShiftTo += increment) {
-            for (int xPosToShiftTo = startValue; condition.apply(xPosToShiftTo); xPosToShiftTo += increment) {
-                for (int cursorPos = isVertical ? yPosToShiftTo : xPosToShiftTo; condition.apply(cursorPos); cursorPos += increment) {
-                    int yPosToShiftFrom = yPosToShiftTo;
-                    int xPosToShiftFrom = cursorPos;
+        for (int yPosToShiftFrom = startValue; condition.apply(yPosToShiftFrom); yPosToShiftFrom += increment) {
+            for (int xPosToShiftFrom = startValue; condition.apply(xPosToShiftFrom); xPosToShiftFrom += increment) {
+                if (board[yPosToShiftFrom][xPosToShiftFrom] != 0) {
+                    boolean movePossible = true;
+                    int cursorPos = isVertical ? yPosToShiftFrom : xPosToShiftFrom;
+                    while (movePossible && cursorPos >= 0 && cursorPos < size) {
+                        int yPosToShiftTo = yPosToShiftFrom;
+                        int xPosToShiftTo = cursorPos;
+                        if (isVertical) {
+                            yPosToShiftTo = cursorPos;
+                            xPosToShiftTo = xPosToShiftFrom;
+                        }
 
+                        cursorPos -= increment;
 
-                    if (isVertical) {
-                        xPosToShiftFrom = xPosToShiftTo;
-                        yPosToShiftFrom = cursorPos;
-                    }
-                    if (yPosToShiftFrom == yPosToShiftTo && xPosToShiftFrom == xPosToShiftTo)
-                        continue;
-                    if (board[yPosToShiftFrom][xPosToShiftFrom] != 0) {
-                        if (board[yPosToShiftTo][xPosToShiftTo] == board[yPosToShiftFrom][xPosToShiftFrom] && !summedUpFields[yPosToShiftTo][xPosToShiftTo]) {
-                            board[yPosToShiftTo][xPosToShiftTo] *= 2;
-                            board[yPosToShiftFrom][xPosToShiftFrom] = 0;
-                            score += board[yPosToShiftTo][xPosToShiftTo];
+                        if (xPosToShiftFrom == xPosToShiftTo && yPosToShiftFrom == yPosToShiftTo) continue;
+
+                        int fromValue = board[yPosToShiftFrom][xPosToShiftFrom];
+                        int toValue = board[yPosToShiftTo][xPosToShiftTo];
+
+                        if (fromValue == toValue && !summedUpFields[yPosToShiftTo][xPosToShiftTo]) {
+                            handleMerge(xPosToShiftFrom, xPosToShiftTo, yPosToShiftFrom, yPosToShiftTo);
                             summedUpFields[yPosToShiftTo][xPosToShiftTo] = true;
                             hasMovedAnything = true;
-                        } else if (board[yPosToShiftTo][xPosToShiftTo] == 0) {
-                            board[yPosToShiftTo][xPosToShiftTo] = board[yPosToShiftFrom][xPosToShiftFrom];
-                            board[yPosToShiftFrom][xPosToShiftFrom] = 0;
+                        } else if (toValue == 0) {
+                            handleNormalMove(xPosToShiftFrom, xPosToShiftTo, yPosToShiftFrom, yPosToShiftTo);
                             hasMovedAnything = true;
+                            if (isVertical) {
+                                yPosToShiftFrom = cursorPos + increment;
+                            } else {
+                                xPosToShiftFrom = cursorPos + increment;
+                            }
+                        } else {
+                            movePossible = false;
                         }
                     }
                 }
@@ -138,6 +148,17 @@ public class GameImpl implements Game {
             moves++;
             placeRandomTile();
         }
+    }
+
+    private void handleMerge(int xFrom, int xTo, int yFrom, int yTo) {
+        board[yTo][xTo] *= 2;
+        board[yFrom][xFrom] = 0;
+        score += board[yTo][xTo];
+    }
+
+    private void handleNormalMove(int xFrom, int xTo, int yFrom, int yTo) {
+        board[yTo][xTo] = board[yFrom][xFrom];
+        board[yFrom][xFrom] = 0;
     }
 
     public void placeRandomTile() {

@@ -291,6 +291,35 @@ class GameTest {
 
             assertEquals(expected, sut.getMoves());
         }
+
+        @Test
+        void moveSameValueWithOtherValueInBetweenAllOnBorderDoesNothing(){
+            var sut = new GameImpl();
+            var expectedMoves = 0;
+
+            sut.placeTile(0, 0, 2);
+            sut.placeTile(0, 1, 4);
+            sut.placeTile(0, 2, 2);
+
+            sut.move(Direction.up);
+
+            assertEquals(expectedMoves, sut.getMoves());
+        }
+
+        @Test
+        void moveOnFullBoardDoesNothing(){
+            var sut = new GameImpl();
+            var expectedMoves = 0;
+            for (int x = 0; x < sut.getBoardSize(); x++) {
+                for (int y = 0; y < sut.getBoardSize(); y++) {
+                    sut.placeTile(x, y, ((x + y) % 2 == 0) ? 4 : 2);
+                }
+            }
+
+            sut.move(Direction.up);
+
+            assertEquals(expectedMoves, sut.getMoves());
+        }
     }
 
     @DisplayName("Add")
